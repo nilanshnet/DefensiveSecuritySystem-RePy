@@ -1,5 +1,5 @@
 """
-This security layer inadequately handles A/B storage for files in RepyV2.
+This security layer will handle A/B storage for files in RepyV2.
 
 
 Note:
