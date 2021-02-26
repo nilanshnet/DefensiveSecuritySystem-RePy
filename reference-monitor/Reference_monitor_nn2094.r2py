@@ -47,14 +47,14 @@ class ABFile():
         self.Bfile = openfile(self.Bfn,create)
         if (not file_check(self.Afile)):
           self.Afile.writeat('SE',0)
-      else:
-        self.Afile = openfile(self.Afn,False)
-        self.Bfile = openfile(self.Bfn,False)
+      # if create is false, then open existing files
+      # else:
+      # self.Afile = openfile(self.Afn,False)
+      # self.Bfile = openfile(self.Bfn,False)
 
 
 
-    def writeat(self,data,offset):
-      
+    def writeat(self,data,offset):      
       # Write the requested data to the B file using the sandbox's writeat call
       self.Bfile.writeat(data,offset)
     
