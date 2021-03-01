@@ -27,7 +27,7 @@ def file_check(input_file):
         last_letter = input_file.readat(1,offs_index)
         offs_index += 1
     except SeekPastEndOfFileError:
-      last_letter = input_file.readat(1,-2)      
+      last_letter = input_file.readat(1,i-2)      
     if last_letter == 'E':
       return True
     else:
@@ -55,21 +55,40 @@ class ABFile():
       else:
         self.Afile = openfile(self.Afn,False)
         self.Bfile = openfile(self.Bfn,False)
-
+      #creting the lock for files
+      self.Afile.filelock = createlock()
+      self.Bfile.filelock = createlock()
 
   def writeat(self,data,offset):      
+    # use the acquire method to lock the file until release
+    self.Bfile.filelock.acquire(True)
+    
     # Write the requested data to the B file using the sandbox's writeat call
     self.Bfile.writeat(data,offset)
     
+    # releasing the lock state
+    self.Bfile.filelock.release()
+    
   def readat(self,bytes,offset):
+    # using the acquire method for the file A too to lock until release
+    self.Afile.filelock.acquire(True)
+    
     # Read from the A file using the sandbox's readat...
     return self.Afile.readat(bytes,offset)
+    
+    # releasing the lock state
+    self.Afile.filelock.release()
 
   def close(self):
+    # using the acquire method to lock the files until release
+    self.Afile.filelock.acquire(True)
+    self.Bfile.filelock.acquire(True)
+    
   # Two conditions for the reference monitor to do for close method
   # If A and B both the files are valid, original file's data is replaced by that of B
     file_validity_A = file_check(self.Afile)
     file_validity_B = file_check(self.Bfile)
+    
     if file_validity_A and file_validity_B:
       data_B = self.Bfile.readat(None,0)
       self.Afile.writeat(data_B,0)
@@ -78,8 +97,11 @@ class ABFile():
       self.Bfile.writeat(data_A,0)
       self.Bfile.close()
     self.Afile.close()
-    removefile(self.Bfn)
-    removefile(self.Afn)
+    
+    #releasing the lock state
+    self.Afile.filelock.release()
+    self.Bfile.filelock.release()
+    
 
 # used to create or open a file when create == True
 def ABopenfile(filename, create):
