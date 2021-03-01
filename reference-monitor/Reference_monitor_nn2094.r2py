@@ -66,14 +66,24 @@ class ABFile():
     return self.Afile.readat(bytes,offset)
 
   def close(self):
+  # Two conditions for the reference monitor to do for close method
+  # If A and B both the files are valid, original file's data is replaced by that of B
+    file_validity_A = file_check(self.Afile)
+    file_validity_B = file_check(self.Bfile)
+    if file_validity_A and file_validity_B:
+      data_B = self.Bfile.readat(None,0)
+      self.Afile.writeat(data_B,0)
+    else:
+      data_A = self.Afile.readat(None,0)
+      self.Bfile.writeat(data_A,0)
+      self.Bfile.close()
     self.Afile.close()
-    self.Bfile.close()
-
+    removefile(self.Bfn)
+    removefile(self.Afn)
 
 # used to create or open a file when create == True
 def ABopenfile(filename, create):
   return ABFile(filename,create)
-
 
 
 
