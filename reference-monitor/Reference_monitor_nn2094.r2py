@@ -1,6 +1,6 @@
-"""
-This security layer will handle A/B storage for files in RepyV2.
 
+"""
+This security layer handles A/B storage for files in RepyV2.
 
 Note:
     This security layer uses encasementlib.r2py, restrictions.default, repy.py and Python
@@ -16,97 +16,100 @@ TARGET="target"
 FUNC="func"
 OBJC="objc"
 
-
-#valid file must start with S and end with E
-def file_check(input_file):
-  first_letter = input_file.readat(1,offs_index)
-  if first_letter == 'S':
-    offs_index = 0
-    try:
-      while(True): 
-        last_letter = input_file.readat(1,offs_index)
-        offs_index += 1
-    except SeekPastEndOfFileError:
-      last_letter = input_file.readat(1,i-2)      
-    if last_letter == 'E':
-      return True
-    else:
-      return False  
-
-
 class ABFile():
   def __init__(self,filename,create):
-    #check for valid file names, should have only numbers and small case alphabets excluding the extension
-    f_name = filename.split('.')
-    if any(char.isdigit() for char in f_name[0]) and f_name[0].islower():   
-      # globals
-      mycontext['debug'] = False   
-      # local (per object) reference to the underlying file
-      self.Afn = filename+'.a'
-      self.Bfn = filename+'.b'
+    # globals
+    mycontext['debug'] = False   
+    # local (per object) reference to the underlying file
+    self.Afn = filename+'.a'
+    self.Bfn = filename+'.b'
 
-      # make the files and add 'SE' to the readat file...
-      if create:
+    # make the files and add 'SE' to the readat file...
+    if create:
+      self.Bfile = openfile(self.Bfn,create)
+      if self.Afn in listfiles():
         self.Afile = openfile(self.Afn,create)
-        self.Bfile = openfile(self.Bfn,create)
-        if (not file_check(self.Afile)):
-          self.Afile.writeat('SE',0)
-      # if create is false, then open existing files
-      else:
-        self.Afile = openfile(self.Afn,False)
-        self.Bfile = openfile(self.Bfn,False)
-      #creting the lock for files
-      self.Afile.filelock = createlock()
-      self.Bfile.filelock = createlock()
+      else:    
+        self.Afile = openfile(self.Afn,create)
+        if (not self.file_check(self.Afile)):
+          self.Afile.writeat('SE',0)  
+    #opening the existing files if not creating 
+    else:
+      self.Afile = openfile(self.Afn,False)
+      self.Bfile = openfile(self.Bfn,False)
 
-  def writeat(self,data,offset):      
+    # Creating locks for files to prevent concurrent usage 
+    self.Afile.filelock = createlock()
+    self.Bfile.filelock = createlock()
+
+
+
+  def file_check(self,input_file):
+    data = input_file.readat(None,0)
+    if data.startswith("S") and data.endswith("E"):
+      return True
+    else:
+      return False
+
+
+
+  def writeat(self,data,offset):
     # use the acquire method to lock the file until release
     self.Bfile.filelock.acquire(True)
-    
-    # Write the requested data to the B file using the sandbox's writeat call
-    self.Bfile.writeat(data,offset)
-    
+    try:
+      # Write the requested data to the B file using the sandbox's writeat call
+      self.Bfile.writeat(data,offset)
+    except:
+      pass
     # releasing the lock state
     self.Bfile.filelock.release()
-    
+
+
+
   def readat(self,bytes,offset):
-    # using the acquire method for the file A too to lock until release
+    # using the acquire method for the file A too, to lock until release
     self.Afile.filelock.acquire(True)
-    
+
     # Read from the A file using the sandbox's readat...
-    return self.Afile.readat(bytes,offset)
-    
+    data_t = self.Afile.readat(bytes,offset)
+
     # releasing the lock state
     self.Afile.filelock.release()
+    
+    return data_t
+
+
 
   def close(self):
-    # using the acquire method to lock the files until release
-    self.Afile.filelock.acquire(True)
+    # using the acquire method to lock the file until release
     self.Bfile.filelock.acquire(True)
+    self.Afile.filelock.acquire(True)
     
-  # Two conditions for the reference monitor to do for close method
-  # If A and B both the files are valid, original file's data is replaced by that of B
-    file_validity_A = file_check(self.Afile)
-    file_validity_B = file_check(self.Bfile)
+    # Two conditions for the reference monitor to do for close method
+    # If A and B both the files are valid, original file's data is replaced by that of B
+    file_data = self.Bfile.readat(None,0)
+    backup_file_data = self.Afile.readat(None,0)
+
+    file_validity_A = self.file_check(self.Afile)
+    file_validity_B = self.file_check(self.Bfile)
     
     if file_validity_A and file_validity_B:
-      data_B = self.Bfile.readat(None,0)
-      self.Afile.writeat(data_B,0)
-    else:
-      data_A = self.Afile.readat(None,0)
-      self.Bfile.writeat(data_A,0)
+      self.Afile.writeat(file_data,0)
+      self.Afile.close()
       self.Bfile.close()
-    self.Afile.close()
-    
+    else:
+      self.Bfile.writeat(backup_file_data, 0)  
+      self.Afile.close()
+      self.Bfile.close() 
+       
     #releasing the lock state
     self.Afile.filelock.release()
     self.Bfile.filelock.release()
     
 
-# used to create or open a file when create == True
+
 def ABopenfile(filename, create):
   return ABFile(filename,create)
-
 
 
 # The code here sets up type checking and variable hiding for you.  You
