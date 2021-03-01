@@ -52,23 +52,22 @@ class ABFile():
         if (not file_check(self.Afile)):
           self.Afile.writeat('SE',0)
       # if create is false, then open existing files
-      # else:
-      # self.Afile = openfile(self.Afn,False)
-      # self.Bfile = openfile(self.Bfn,False)
+      else:
+        self.Afile = openfile(self.Afn,False)
+        self.Bfile = openfile(self.Bfn,False)
 
 
-
-    def writeat(self,data,offset):      
-      # Write the requested data to the B file using the sandbox's writeat call
-      self.Bfile.writeat(data,offset)
+  def writeat(self,data,offset):      
+    # Write the requested data to the B file using the sandbox's writeat call
+    self.Bfile.writeat(data,offset)
     
-    def readat(self,bytes,offset):
-      # Read from the A file using the sandbox's readat...
-      return self.Afile.readat(bytes,offset)
+  def readat(self,bytes,offset):
+    # Read from the A file using the sandbox's readat...
+    return self.Afile.readat(bytes,offset)
 
-    def close(self):
-      self.Afile.close()
-      self.Bfile.close()
+  def close(self):
+    self.Afile.close()
+    self.Bfile.close()
 
 
 # used to create or open a file when create == True
