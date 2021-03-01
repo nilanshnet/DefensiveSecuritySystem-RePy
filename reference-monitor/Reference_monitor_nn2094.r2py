@@ -18,16 +18,20 @@ OBJC="objc"
 
 
 #valid file must start with S and end with E
-def file_check(file):
-  first_letter = file.readat(1,0)
-  if (first_letter == 'S'):
-    last_letter = file.readat(0,-1)
-    if (last_letter == 'E'):
+def file_check(input_file):
+  first_letter = input_file.readat(1,offs_index)
+  if first_letter == 'S':
+    offs_index = 0
+    try:
+      while(True): 
+        last_letter = input_file.readat(1,offs_index)
+        offs_index += 1
+    except SeekPastEndOfFileError:
+      last_letter = input_file.readat(1,-2)      
+    if last_letter == 'E':
       return True
     else:
-      return False
-  else:
-    return False
+      return False  
 
 
 class ABFile():
@@ -65,6 +69,7 @@ class ABFile():
     def close(self):
       self.Afile.close()
       self.Bfile.close()
+
 
 # used to create or open a file when create == True
 def ABopenfile(filename, create):
