@@ -16,6 +16,11 @@ TARGET="target"
 FUNC="func"
 OBJC="objc"
 
+# File A > valid backup file to read from 
+# File B > valid backup file to write to 
+# write permissions are allowed for all files 
+
+
 class ABFile():
   def __init__(self,filename,create):
     # globals
@@ -24,9 +29,12 @@ class ABFile():
     self.Afn = filename+'.a'
     self.Bfn = filename+'.b'
 
+    # when ABopenfile() is called to create a file that does not exist (by setting create=True when calling the function,
+    # the reference monitor will create a new file A and write 'SE' ; and an empty file called B
     # make the files and add 'SE' to the readat file...
     if create:
       self.Bfile = openfile(self.Bfn,create)
+      #check for already existing files
       if self.Afn in listfiles():
         self.Afile = openfile(self.Afn,create)
       else:    
@@ -43,7 +51,7 @@ class ABFile():
     self.Bfile.filelock = createlock()
 
 
-
+# cheching for a valid file to start with S and end with E
   def file_check(self,input_file):
     data = input_file.readat(None,0)
     if data.startswith("S") and data.endswith("E"):
@@ -52,7 +60,7 @@ class ABFile():
       return False
 
 
-
+# when this method is called all the writes happen to invalid file B
   def writeat(self,data,offset):
     # use the acquire method to lock the file until release
     self.Bfile.filelock.acquire(True)
@@ -65,7 +73,7 @@ class ABFile():
     self.Bfile.filelock.release()
 
 
-
+# when this method is called all the reads are on the read file A
   def readat(self,bytes,offset):
     # using the acquire method for the file A too, to lock until release
     self.Afile.filelock.acquire(True)
@@ -87,6 +95,7 @@ class ABFile():
     
     # Two conditions for the reference monitor to do for close method
     # If A and B both the files are valid, original file's data is replaced by that of B
+    # If not then the backup is written to original file 
     file_data = self.Bfile.readat(None,0)
     backup_file_data = self.Afile.readat(None,0)
 
@@ -107,7 +116,7 @@ class ABFile():
     self.Bfile.filelock.release()
     
 
-
+# when this function is called, it opens Files A and B 
 def ABopenfile(filename, create):
   return ABFile(filename,create)
 
