@@ -1,0 +1,18 @@
+# clean up of original files
+if "testfile.txt.a" in listfiles():
+  removefile("testfile.txt.a")
+if "testfile.txt.b" in listfiles():
+  removefile("testfile.txt.b")
+
+# calls ABopenfile() to open A/B files
+myfile=ABopenfile("testfile.txt",True)  #Create an AB file
+
+# try block tries to check if the write operation is working 
+# and except block writes down the error log if the write is not allowed
+try:
+  assert(myfile.writeat("SE",0)))
+  #Close the file
+  myfile.close()
+except:
+  log("Write operation for the file is failing")
+  myfile.close()

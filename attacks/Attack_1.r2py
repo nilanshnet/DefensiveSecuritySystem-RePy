@@ -1,0 +1,24 @@
+# clean up of original files
+if "testfile.txt.a" in listfiles():
+  removefile("testfile.txt.a")
+if "testfile.txt.b" in listfiles():
+  removefile("testfile.txt.b")
+
+# calls ABopenfile() to open A/B files
+myfile=ABopenfile("testfile.txt",True)  #Create an AB file
+
+# without writing anything, close the file 
+myfile.close()
+
+#reopen the file again to see if reference monitor writes 'SE' / valid write was succesful
+myfile=ABopenfile("testfile.txt",True)
+
+#test if write operation is blocked on an invalid empty/new file to write 'S' at the beginning and 'E' at the end
+try:
+  assert('SE' == myfile.readat(None,0))
+  #Close the file
+  myfile.close()
+except:
+  log("Security monitor does not write SE on an invalid file")
+  myfile.close()
+  

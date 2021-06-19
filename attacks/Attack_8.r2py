@@ -1,0 +1,33 @@
+# clean up of original files
+if "testfile.txt.a" in listfiles():
+  removefile("testfile.txt.a")
+if "testfile.txt.b" in listfiles():
+  removefile("testfile.txt.b")
+
+# calls ABopenfile() to open A/B files
+myfile=ABopenfile("testfile.txt",True)  #Create an AB file
+
+# Writing valid data and closing the file
+myfile.writeat("SE",0)
+myfile.close()
+
+# Removing the files to see if they are being removed or not
+if "testfile.txt.a" in listfiles():
+  removefile("testfile.txt.a")
+if "testfile.txt.b" in listfiles():
+  removefile("testfile.txt.b")
+
+# Function to Check if any of the files still exist 
+def file_checker():
+  if ("testfile.txt.a" in listfiles()) or ("testfile.txt.a" in listfiles()):
+    return False
+  else:
+    return True
+
+# try block tries to check if the 'file_checker' function is findind any files that were removed 
+# and except block writes down the error log if it is failing
+try:
+  assert(file_checker())
+except:
+  log("Remove file function not working properly")
+  myfile.close()

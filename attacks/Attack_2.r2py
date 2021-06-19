@@ -1,0 +1,26 @@
+# clean up of original files
+if "testfile.txt.a" in listfiles():
+  removefile("testfile.txt.a")
+if "testfile.txt.b" in listfiles():
+  removefile("testfile.txt.b")
+
+# calls ABopenfile() to open A/B files
+myfile=ABopenfile("testfile.txt",True)  #Create an AB file
+
+# Writing valid data and closing the file
+myfile.writeat("SE",0)
+myfile.close()
+
+#reopen the file again to see if valid write was succesful
+myfile=ABopenfile("testfile.txt",True)
+
+# try block tries to check if the valid write was successful 
+# and except block writes down the error log if SE is not present
+try:
+  assert('SE' == myfile.readat(2,0))
+  #Close the file
+  myfile.close()
+except:
+  log("valid write to the file is failing")
+  myfile.close()
+  

@@ -1,0 +1,15 @@
+# clean up of original files
+if "testfile.txt.a" in listfiles():
+  removefile("testfile.txt.a")
+if "testfile.txt.b" in listfiles():
+  removefile("testfile.txt.b")
+
+# try block tries to check if the ABopen file call is working properly for creating a new file
+# and except block writes down the error log if it is failing
+try:
+  myfile = ABopenfile("testfile.txt",True)
+  #Close the file
+  myfile.close()
+except:
+  log("Unable to create a new file")
+  myfile.close()

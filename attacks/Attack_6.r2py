@@ -1,0 +1,21 @@
+# clean up of original files
+if "testfile.txt.a" in listfiles():
+  removefile("testfile.txt.a")
+if "testfile.txt.b" in listfiles():
+  removefile("testfile.txt.b")
+
+# calls ABopenfile() to open A/B files
+myfile=ABopenfile("testfile.txt",True)  #Create an AB file
+
+#Closing the file
+myfile.close()
+
+# try block tries to check if the open function is working properly for a created file
+# and except block writes down the error log if it is failing
+try:
+  myfile=ABopenfile("testfile.txt",False)
+  #Close the file
+  myfile.close()
+except:
+  log("Unable to open an existing file")
+  myfile.close()

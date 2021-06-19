@@ -1,0 +1,25 @@
+# clean up of original files
+if "testfile.txt.a" in listfiles():
+  removefile("testfile.txt.a")
+if "testfile.txt.b" in listfiles():
+  removefile("testfile.txt.b")
+
+# calls ABopenfile() to open A/B files
+myfile=ABopenfile("testfile.txt",True)  #Create an AB file
+
+# Writing INvalid data and closing the file
+myfile.writeat("nn2094",0)
+myfile.close()
+
+#reopen the file again to see if INvalid write was succesful
+myfile=ABopenfile("testfile.txt",True)
+
+# try block tries to check if the file is still valid by checking 'SE' to be present 
+# and except block writes down the error log if SE is not present and invalid writes are allowed
+try:
+  assert(myfile.readat(None,0).startswith("S") and myfile.readat(None,0).endswith("E"))
+  #Close the file
+  myfile.close()
+except:
+  myfile.close()
+  log("Security monitor allows INvalid data to be written to the file")
