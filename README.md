@@ -1,10 +1,13 @@
 # Defensive Security System: Reference Monitor
 The repository contains a security layer reference monitor which keeps backup copy of a file which is useful if incase the file was written incorrectly, built using the security layer functionality in RepyV2. Along with the reference monitor, there are attack cases that can be done on the reference monitor for validation purposes and to identify improvement opportunities.     
 
+
+
 ## Reference Monitor security layer using RepyV2
 
 ### What is a Reference monitor?
 A Reference monitor is an access control mechanism (abstract machine) for mediating access to the objects by the subjects, determined using access policies. 
+
 
 ### About this Reference Monitor system
 This [Reference monitor system](./reference-monitor/Reference_monitor_nn2094.r2py) handles the storage for files in [Repy V2](https://github.com/SeattleTestbed/repy_v2). Using this reference monitor, we are trying to keep a backup copy of the file, so that it can be used if incase the original file was written incorrectly at any time. This kind of technique is commonly used in many modern cloud based security systems like file integrity monitors; also in firmware images, among others. 
@@ -12,6 +15,7 @@ This [Reference monitor system](./reference-monitor/Reference_monitor_nn2094.r2p
 [Reference this for detailed guidelines.](https://github.com/SeattleTestbed/docs/blob/master/EducationalAssignments/ABStoragePartOne.md)
 
 To validate the reference monitor there are certain [attacks](./attacks/) that we do on a reference monitor. These act as a test cases and help us act as an attacker, trying to bypass the security of this reference monitor.
+
 
 ### Design Considerations and Rules for this reference monitor security layer
 - System stores two copies of A/B files on disk. One is a valid backup file (used for Read) and the other one is an active file in which data is written.
@@ -22,10 +26,12 @@ To validate the reference monitor there are certain [attacks](./attacks/) that w
 - Updates the original file with the new data, if new one is valid. 
 - No output to the user on normal and invalid operations (no logs).
 
+
 ### Design paradigms at work
 - Accuracy: The security layer should only allow or stop certain actions and should not behave in an unexpected manner. For example, if an app tries to read data from a valid file, this must succeed as per normal and must not be blocked.
 - Efficiency: The reference monitor security layer's performance must not be compromised. It should only use the minimum necessary amount of resources and should not overdo the resource utilization. For example, keeping a complete copy of every file on disk in memory would be forbidden.
 - Security: The reference monitor security layer should not allow any person or process to circumvent the itself. For example, the attacker can cause an invalid file to be read or can write to a valid file, then the security is compromised.
+
 
 ### Get it in Action
 To see the reference monitor security layer run:
@@ -37,10 +43,12 @@ Replace the ```[Reference_monitor_file].r2py``` with the full name of your refer
 
 ***If you got an error, please go through the troubleshooting section below.***
 
+
 ### Troubleshooting
 - One of the most common errors occur because of using ```print``` instead of ```log``` - Although, Repy is a subset of Python, but its ```print``` is replaced by ```log```. 
 - In the execution command above, you must have ```repy.py```, ```restrictions.default```, ```encasementlib.r2py```, the security layer and the program you want to run in the current working directory. If any or all of the above files are not in that directory then you will not be able to run repy files.
 - See the Repy V2 library from the **References** section for syntax based troubleshooting.
+
 
 
 ## References
