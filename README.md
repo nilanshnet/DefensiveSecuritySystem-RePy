@@ -12,10 +12,11 @@ A Reference monitor is an access control mechanism (abstract machine) for mediat
 ### About this Reference Monitor system
 This [Reference monitor system](./reference-monitor/Reference_monitor_nn2094.r2py) handles the storage for files in [Repy V2](https://github.com/SeattleTestbed/repy_v2). Using this reference monitor, we are trying to keep a backup copy of the file, so that it can be used if incase the original file was written incorrectly at any time. This kind of technique is commonly used in many modern cloud based security systems like file integrity monitors; also in firmware images, among others. 
 
-[Reference this for detailed guidelines.](https://github.com/SeattleTestbed/docs/blob/master/EducationalAssignments/ABStoragePartOne.md)
+[Reference this for more details about building the reference monitor](https://github.com/SeattleTestbed/docs/blob/master/EducationalAssignments/ABStoragePartOne.md)
 
 To validate the reference monitor there are certain [attacks](./attacks/) that we do on a reference monitor. These act as a test cases and help us act as an attacker, trying to bypass the security of this reference monitor.
 
+[Reference this for more details about attacking the reference monitor](https://github.com/SeattleTestbed/docs/blob/master/EducationalAssignments/ABStoragePartTwo.md) 
 
 ### Design Considerations and Rules for this reference monitor security layer
 - System stores two copies of A/B files on disk. One is a valid backup file (used for Read) and the other one is an active file in which data is written.
@@ -57,3 +58,6 @@ Replace the ```[Reference_monitor_file].r2py``` with the full name of your refer
 - [What is the difference between RePy and Regular Python?](https://github.com/SeattleTestbed/docs/blob/master/Programming/PythonVsRepy.md#python-built-ins-not-in-repy)
 - [RepyV2 Setup](https://github.com/SeattleTestbed/docs/blob/master/Contributing/BuildInstructions.md)
 - [RepyV2 Library Reference](https://github.com/SeattleTestbed/docs/blob/master/Programming/RepyV2API.md)
+- [Fixing your Reference monitor bugs for improving security, accuracy and efficiency](https://github.com/SeattleTestbed/docs/blob/master/EducationalAssignments/ABStoragePartThree.md)
+- [Building a Reference monitor](https://github.com/SeattleTestbed/docs/blob/master/EducationalAssignments/ABStoragePartOne.md)
+- [Attacking the Reference monitor](https://github.com/SeattleTestbed/docs/blob/master/EducationalAssignments/ABStoragePartTwo.md) 
