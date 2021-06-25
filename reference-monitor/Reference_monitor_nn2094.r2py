@@ -17,7 +17,7 @@ FUNC="func"
 OBJC="objc"
 
 # File A > valid backup file to read from 
-# File B > valid backup file to write to 
+# File B > valid file to write to 
 # write permissions are allowed for all files 
 
 
