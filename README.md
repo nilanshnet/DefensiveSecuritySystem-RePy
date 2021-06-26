@@ -39,7 +39,10 @@ To see the reference monitor security layer run:
 1. First we need to install and setup RepyV2. Please follow the link in **References** section for the guidelines.
 2. After building the RepyV2 in a choice of directory, navigate to the directory using the cmd/terminal. Add the [Reference monitor file](./reference-monitor/Reference_monitor_nn2094.r2py) and one or more of the [attack programs](./attacks/). Remember to use the proper file extensions.
 3. Use the following command:
-```python repy.py restrictions.default encasementlib.r2py [Reference_monitor_file].r2py [attack_program].r2py```
+```
+python repy.py restrictions.default encasementlib.r2py [Reference_monitor_file].r2py [attack_program].r2py
+```
+
 Replace the ```[Reference_monitor_file].r2py``` with the full name of your reference monitor file and ```[attack_program].r2py``` with the full name of one of the attack cases. Voila!
 
 ***If you got an error, please go through the troubleshooting section below.***
